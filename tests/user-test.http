@@ -1,0 +1,16 @@
+### - pobierz wszystkich użytkowników
+GET http://localhost:3000/api/users HTTP/1.1
+
+### - pobierz użytkownika po teamie
+GET http://localhost:3000/api/users/3 HTTP/1.1
+
+### - dodaj użytkownika
+POST http://localhost:3000/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "test-user"
+}
+
+### - usuń użytkownika po teamie
+DELETE  http://localhost:3000/api/users/2 HTTP/1.1
