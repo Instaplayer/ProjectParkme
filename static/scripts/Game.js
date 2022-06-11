@@ -21,11 +21,19 @@ class Game {
         this.scene.add( this.light2 );
 
         let testCar = new Car(3)
+        let testCar2 = new Car(3)
+        testCar2.returnCarModel().position.z = 300
+        testCar2.returnCarModel().rotation.y = Math.PI/2
 
         this.cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
         testCar.enableDragControls(this.camera,this.renderer.domElement, this.cameraControls)
+        testCar2.enableDragControls(this.camera,this.renderer.domElement, this.cameraControls)
+
 
         this.scene.add(testCar.returnCarModel())
+        this.scene.add(testCar2.returnCarModel())
+
+        
 
         document.getElementById("root").append(this.renderer.domElement);
 
@@ -41,7 +49,6 @@ class Game {
     render = () => {
         requestAnimationFrame(this.render);
         this.renderer.render(this.scene, this.camera);
-
         console.log("render leci")
     }
 }
