@@ -1,5 +1,5 @@
 class Car {
-    constructor(length){
+    constructor(length) {
 
         this.object = new THREE.Object3D()
 
@@ -16,9 +16,9 @@ class Car {
             opacity: 1
         })
 
-        const cubeGeometry = new THREE.BoxGeometry(100 * length,100,100)
-
+        const cubeGeometry = new THREE.BoxGeometry(45 * length, 40, 40)
         this.carModel = new THREE.Mesh(cubeGeometry, this.carMaterial)
+        this.carModel.userData = "car";
         this.object.add(this.carModel)
     }
 
@@ -26,10 +26,10 @@ class Car {
         return this.object
     }
 
-    enableDragControls(camera, rendererDom, cameraControls){
+    enableDragControls(camera, rendererDom, cameraControls) {
         this.objectControls = new THREE.DragControls([this.object], camera, rendererDom)
-        this.objectControls.addEventListener( 'dragstart', function () { cameraControls.enabled = false; } );
-		this.objectControls.addEventListener( 'dragend', function () { cameraControls.enabled = true; } );
+        this.objectControls.addEventListener('dragstart', function () { cameraControls.enabled = false; });
+        this.objectControls.addEventListener('dragend', function () { cameraControls.enabled = true; });
     }
 
 }
