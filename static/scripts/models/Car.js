@@ -1,5 +1,5 @@
 class Car {
-    constructor(length){
+    constructor(length) {
 
         this.object = new THREE.Object3D()
 
@@ -36,6 +36,7 @@ class Car {
         const cubeGeometry = new THREE.BoxGeometry(100 * length,100,100)
 
         this.carModel = new THREE.Mesh(cubeGeometry, this.carMaterial)
+        this.carModel.userData = "car";
         this.object.add(this.carModel)
 
         this.boundingBox = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());

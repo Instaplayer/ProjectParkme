@@ -1,36 +1,72 @@
 class Game {
     constructor() {
+        // auta blokujące
+        // [x, y, boolRotation]
+        // jeśli boolRotation true
+        // auta są obrócone o 90 stopni
+        this.cars = [
+            [-350, 475, true],
+            // [-450, 425],
+            // [-450, 375],
+            // [-450, 325],
+            // [-450, 275],
+            // [-450, 225],
+            // [-450, 175],
+            // [-450, 125],
+            // [-450, 75],
+            [50, 475, true],
+            // [50, 425],
+            // [50, 375],
+            // [50, 325],
+            // [50, 275],
+            [150, 475, false],
+            // [150, 325]
+        ]
         this.scene = new THREE.Scene();
-
-        this.camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 10000  );
-        this.camera.position.set(300,150,300)
+        this.checkedCar = null;
+        this.x = -500;
+        this.x2 = -500;
+        this.camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 10000);
+        this.camera.position.set(1750, 750, 1750)
         this.camera.lookAt(this.scene.position);
 
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setClearColor(0x0066ff);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        this.light1 = new THREE.DirectionalLight( 0xffffff, 1, 100 );
-        this.light1.position.set( 0.2, 1, 0.4 )
+        this.light1 = new THREE.DirectionalLight(0xffffff, 1, 100);
+        this.light1.position.set(0.2, 1, 0.4)
         this.light1.castShadow = true
-        this.scene.add( this.light1 );
+        this.scene.add(this.light1);
 
-        this.light2 = new THREE.DirectionalLight( 0xffffff, 1, 100 );
-        this.light2.position.set( -0.2, 1, -0.4 )
+        this.light2 = new THREE.DirectionalLight(0xffffff, 1, 100);
+        this.light2.position.set(-0.2, 1, -0.4)
         this.light2.castShadow = true
         this.scene.add( this.light2 );
 
-        let testCar = new Car(3)
-        let testCar2 = new Car(3)
+        this.carList = []
 
-        this.scene.add(testCar.bbHelper)
-        this.scene.add(testCar2.bbHelper)
+        // Auto Startowe
+        let startCar = new Car(2)
+        console.log(startCar);
+        this.carList.push(startCar)
 
+        this.scene.add(startCar.bbHelper)
+        this.scene.add(startCar.returnCarModel())
 
-        this.carList = [testCar, testCar2]
-
-        testCar2.returnCarModel().position.z = 300
-        testCar2.returnCarModel().rotation.y = Math.PI/2
+        for (let i = 0; i < this.cars.length; i++) {
+            let car = new Car(2)
+            this.carList.push(car)
+            car.object.position.set(this.cars[i][0] * 2.22, 15, this.cars[i][1] * 2.22)
+            if(this.cars[i][2])
+            car.object.rotation.y = Math.PI/2
+            this.scene.add(car.bbHelper)
+            this.scene.add(car.returnCarModel())
+        }
+        startCar.object.position.set(1000, 15, 55.556)
+        startCar.carMaterial.color.b = 0;
+        startCar.carMaterial.color.r = 0;
+        startCar.object.userData = "startCar";
 
         let cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
 
@@ -47,8 +83,6 @@ class Game {
 
             this.draggableController.addEventListener( 'dragstart', function (event) {
 
-                console.log("dragstart")
-
                 cameraControls.enabled = false; 
 
                 dragArray.forEach(car => {
@@ -62,6 +96,7 @@ class Game {
                     y: event.object.position.y,
                     z: event.object.position.z
                 }
+                
 
                 this.origin = {
                     x: event.object.position.x,
@@ -103,6 +138,10 @@ class Game {
 
 
                 if(this.selectedCar){
+
+                    this.intersects1 = []
+                    this.intersects2 = []
+
                     if(this.selectedCar.checkColisions(dragArray)){
                         if(!this.selectedCar.opaque){
                             this.selectedCar.toggleOpacity()
@@ -110,18 +149,35 @@ class Game {
                     }
                     else {
 
-                        let ray1 = new THREE.Raycaster(new THREE.Vector3(this.endPoint.x + 49, this.endPoint.y, this.endPoint.z + 49), new THREE.Vector3(this.startingPoint.x + 49, this.startingPoint.y, this.startingPoint.z + 49).normalize())
-                        let ray2 = new THREE.Raycaster(new THREE.Vector3(this.endPoint.x - 49, this.endPoint.y, this.endPoint.z - 49), new THREE.Vector3(this.startingPoint.x - 49, this.startingPoint.y, this.startingPoint.z - 49).normalize())
+                        let ray1 = new THREE.Raycaster(
+                            new THREE.Vector3(this.endPoint.x + 49, this.endPoint.y, this.endPoint.z + 49),
+                            new THREE.Vector3( this.startingPoint.x - this.endPoint.x, this.startingPoint.y - this.endPoint.y, this.startingPoint.z - this.endPoint.z ).normalize(),
+                            0,
+                            new THREE.Vector3(this.endPoint.x, this.endPoint.y, this.endPoint.z).distanceTo(new THREE.Vector3(this.startingPoint.x, this.startingPoint.y, this.startingPoint.z))
+                        )
+
+                        let ray2 = new THREE.Raycaster(
+                            new THREE.Vector3(this.endPoint.x - 49, this.endPoint.y, this.endPoint.z - 49),
+                            new THREE.Vector3( this.startingPoint.x - this.endPoint.x, this.startingPoint.y - this.endPoint.y, this.startingPoint.z - this.endPoint.z ).normalize(),
+                            0,
+                            new THREE.Vector3(this.endPoint.x, this.endPoint.y, this.endPoint.z).distanceTo(new THREE.Vector3(this.startingPoint.x, this.startingPoint.y, this.startingPoint.z))
+                        )
 
                         dragArray.forEach(car => {
                             if(car.object != event.object){
-                                this.intersects1 = ray1.intersectObject(car.object)
-                                this.intersects2 = ray2.intersectObject(car.object)
+
+                                if(ray1.intersectObject(car.object).length > 0){
+                                    this.intersects1 = ray1.intersectObject(car.object)
+                                }
+                                else if(ray2.intersectObject(car.object).length > 0){
+                                    this.intersects2 = ray2.intersectObject(car.object)
+                                }
+
                             }
 
                         });
 
-                        if(this.selectedCar.opaque && this.intersects1.length == 0 && this.intersects2.length == 0)
+                        if(!this.selectedCar.checkColisions(dragArray) && this.selectedCar.opaque && this.intersects1.length == 0 && this.intersects2.length == 0)
                         this.selectedCar.toggleOpacity()
                     }
                 }
@@ -154,14 +210,97 @@ class Game {
         }
 
 
-        this.scene.add(testCar.returnCarModel())
-        this.scene.add(testCar2.returnCarModel())
+        // this.scene.add(testCar.returnCarModel())
+        // this.scene.add(testCar2.returnCarModel())
+        // let testCar = new Car(2)
 
+        // Plansza
+        this.geometry = new THREE.BoxGeometry(2222.22, 20, 2222.22);
+        this.material = new THREE.MeshBasicMaterial({
+            color: 0xf07630,
+            side: THREE.DoubleSide
+        });
+        this.cube = new THREE.Mesh(this.geometry, this.material);
+        this.cube.position.set(0, -44.44, 0)
+        this.scene.add(this.cube);
+        this.geometryLine = new THREE.BoxGeometry(2222.22, 1, 11.11);
+        for (let i = 0; i < 20; i++) {
+            this.material = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                side: THREE.DoubleSide
+            });
+            this.cube = new THREE.Mesh(this.geometryLine, this.material);
+            this.cube.position.set(0, -32.22, this.x * 2.22)
+            this.scene.add(this.cube);
+            if (i >= 18) {
+                this.x += 45;
+            }
+            else {
+                this.x += 50;
+            }
+        }
+        this.geometryLine2 = new THREE.BoxGeometry(11.11, 1, 2222.22);
+        for (let i = 0; i < 10; i++) {
+            this.material = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                side: THREE.DoubleSide
+            });
+            this.cube = new THREE.Mesh(this.geometryLine2, this.material);
+            this.cube.position.set(this.x2 * 2.22, -32.22, 0)
+            this.scene.add(this.cube);
+            this.x2 += 100;
+        }
+        this.geometryFinish = new THREE.BoxGeometry(222.22, 1, 111.11);
+        this.materialFinish = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,
+            side: THREE.DoubleSide
+        });
+
+        // kostka końca
+        this.finishCube = new THREE.Mesh(this.geometryFinish, this.materialFinish);
+        this.finishCube.position.set(-1000, -32.22, 55.556)
+        this.scene.add(this.finishCube);
+        this.materialStart = new THREE.MeshBasicMaterial({
+            color: 0x0000ff,
+            side: THREE.DoubleSide
+        });
+
+        // kostka spawnu
+        this.startCube = new THREE.Mesh(this.geometryFinish, this.materialStart);
+        this.startCube.position.set(1000, -32.22, 55.556)
+        this.scene.add(this.startCube);
+
+        // this.cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
+        //  testCar.enableDragControls(this.camera, this.renderer.domElement, this.cameraControls)
+
+        // // Funkcja podświetlająca
+        // const raycaster = new THREE.Raycaster();
+        // const mouseVector = new THREE.Vector2();
+        // document.getElementById("root").addEventListener("mousedown", () => {
+        //     // console.log(event.clientX);
+        //     // console.log(window.innerHeight);
+        //     console.log(mouseVector)
+        //     mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
+        //     mouseVector.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        //     raycaster.setFromCamera(mouseVector, this.camera);
+        //     let intersects = raycaster.intersectObjects(this.scene.children);
+        //     if (intersects.length > 0) {
+        //         if (intersects[0].object.userData == "car") {
+        //             console.log(intersects[0].object);
+        //             if (this.checkedCar) {
+        //                 this.checkedCar.material.color.b = 0;
+        //             }
+        //             intersects[0].object.material.color.b = 1;
+        //             this.checkedCar = intersects[0].object;
+        //         }
+        //     }
+        // }
+        // );
         document.getElementById("root").append(this.renderer.domElement);
 
         this.render() // wywołanie metody render
 
-        window.onresize = ()=>{
+        window.onresize = () => {
             this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight)

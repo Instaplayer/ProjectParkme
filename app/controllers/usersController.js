@@ -8,14 +8,14 @@ module.exports = {
     getUserWithID: async (id) => {
         let selectedPlayer
         model.playerArray.forEach(player => {
-            if(player.team == id)
-            selectedPlayer = player
+            if (player.team == id)
+                selectedPlayer = player
         })
 
-        if(selectedPlayer)
-        return selectedPlayer
+        if (selectedPlayer)
+            return selectedPlayer
         else
-        return {status: "error"}
+            return { status: "error" }
     },
 
     postUser: async (name) => {
@@ -26,17 +26,17 @@ module.exports = {
         }
 
 
-        if(model.playerArray.length < model.playerLimit || model.playerLimit < 0){
+        if (model.playerArray.length < model.playerLimit || model.playerLimit < 0) {
 
-            for(let x = 1; x < model.playerArray.length + 2; x++){
+            for (let x = 1; x < model.playerArray.length + 2; x++) {
                 let teamFound = x
                 model.playerArray.forEach(player => {
-                    if(player.team == x){
+                    if (player.team == x) {
                         teamFound = 0
                     }
                 })
 
-                if(teamFound != 0){
+                if (teamFound != 0) {
                     plrObject = new model.Player(teamFound, name)
                     model.playerArray.push(plrObject)
 
@@ -59,9 +59,9 @@ module.exports = {
         }
 
         model.playerArray.forEach(player => {
-            if(player.team == teamID){
+            if (player.team == teamID) {
                 resObj.data = player,
-                resObj.status = "success"
+                    resObj.status = "success"
 
                 model.playerArray.splice(model.playerArray.indexOf(player), 1)
             }
