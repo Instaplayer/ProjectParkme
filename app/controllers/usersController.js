@@ -70,4 +70,3 @@ module.exports = {
         return resObj
     }
 }
-module.exports = { postUser }

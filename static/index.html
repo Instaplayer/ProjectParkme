@@ -11,6 +11,15 @@
 
 <body>
     <div id="ui">
+        <div id="background">
+            <div id="log">
+                <h1> LOGOWANIE </h1>
+                <input type="text" placeholder="Wpisz swoj nick..." id="nick"> <br>
+                <div id="submit" onclick="log()"> Zaloguj </div> <br>
+            </div>
+            <div id="wait"> <span>Oczekiwanie na drugiego gracza... </span>
+            </div>
+        </div>
     </div>
     <div id="root"></div>
 
@@ -25,6 +34,24 @@
     <!-- Podstawowe skrypty -->
     <script src="scripts/Game.js"></script>
     <script src="scripts/Main.js"></script>
+    <script>
+        let a = 0;
+        function log() {
+            if (a == 0) {
+                document.getElementById("log").style.display = "none";
+                document.getElementById("wait").style.display = "block";
+            }
+            else if (a == 1) {
+                document.getElementById("log").style.display = "none";
+                document.getElementById("background").style.display = "none";
+            }
+            else {
+                alert("Jest już max liczba graczy!");
+
+            }
+            a++;
+        }
+    </script>
 </body>
 
 </html>

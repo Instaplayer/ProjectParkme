@@ -3,7 +3,11 @@ class Car {
 
         this.object = new THREE.Object3D()
 
+        this.storedPos = this.object.position
+
         this.length = length
+
+        this.opaque = false
 
         this.carMaterial = new THREE.MeshPhongMaterial({
             // map: texture,
@@ -16,20 +20,65 @@ class Car {
             opacity: 1
         })
 
-        const cubeGeometry = new THREE.BoxGeometry(45 * length, 40, 40)
+        this.opaqueCarMaterial = new THREE.MeshPhongMaterial({
+            // map: texture,
+            specular: 0x550606,
+            // specularMap: texture,
+            shininess: 100,
+            side: THREE.DoubleSide,
+            color: 0xff1111,
+            transparent: true,
+            opacity: 0.4
+        })
+
+        this.boundingBox = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+
+        const cubeGeometry = new THREE.BoxGeometry(100 * length, 100, 100)
+
         this.carModel = new THREE.Mesh(cubeGeometry, this.carMaterial)
         this.carModel.userData = "car";
         this.object.add(this.carModel)
+
+        this.boundingBox = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+        this.boundingBox.setFromObject(this.carModel)
+
+        this.bbHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00)
+
+        console.log(this)
     }
 
     returnCarModel = () => {
         return this.object
     }
 
-    enableDragControls(camera, rendererDom, cameraControls) {
-        this.objectControls = new THREE.DragControls([this.object], camera, rendererDom)
-        this.objectControls.addEventListener('dragstart', function () { cameraControls.enabled = false; });
-        this.objectControls.addEventListener('dragend', function () { cameraControls.enabled = true; });
+    checkColisions = (carArray) => {
+
+        let colides = false
+
+        carArray.forEach(car => {
+            if (car.boundingBox != this.boundingBox) {
+                if (this.boundingBox.intersectsBox(car.boundingBox)) {
+                    colides = true
+                }
+            }
+        });
+
+        return colides
+    }
+
+    updateBoundingBox = () => {
+        this.boundingBox.copy(this.carModel.geometry.boundingBox).applyMatrix4(this.object.matrixWorld)
+    }
+
+    toggleOpacity = () => {
+        if (this.carModel.material == this.carMaterial) {
+            this.carModel.material = this.opaqueCarMaterial
+            this.opaque = true
+        }
+        else {
+            this.carModel.material = this.carMaterial
+            this.opaque = false
+        }
     }
 
 }
