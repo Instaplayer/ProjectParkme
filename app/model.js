@@ -13,4 +13,8 @@ class Player {
     }
 }
 
-module.exports = { playerLimit, playerArray, Player }
+// zmienna która wysyła który team wygrał
+// neutralnie == 0
+let winningTeam = 0
+
+module.exports = { playerLimit, playerArray, Player, winningTeam }

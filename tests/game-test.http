@@ -1,0 +1,11 @@
+### - pobierz mapę
+GET http://localhost:3000/api/game/map HTTP/1.1
+
+### - resetuj mapę
+POST http://localhost:3000/api/game/map HTTP/1.1
+
+### - wyślij informacje o wygranej
+POST http://localhost:3000/api/game/win/1 HTTP/1.1
+
+### - pobierz wygranego
+GET http://localhost:3000/api/game/win HTTP/1.1

@@ -13,6 +13,7 @@ const router = async (req, res) => {
 
         if (req.method == "DELETE") {
             let endData = await usersController.deleteUser(urlSplit[3])
+            usersController.resetEndGame()
             res.end(JSON.stringify(endData))
         }
     }

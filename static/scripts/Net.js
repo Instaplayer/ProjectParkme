@@ -56,4 +56,46 @@ class Net {
                 return data
             })
     }
+
+    getMapData = async () => {
+        const options = {
+            method: "GET"
+        }
+
+        let response = await fetch("/api/game/map", options)
+        if(!response.ok)
+            return response.status
+        else
+            return response.json().then(data => {
+                return data.map
+            })
+    }
+
+    sendWinner = async () => {
+        const options = {
+            method: "POST",
+        }
+
+        let response = await fetch("/api/game/win/" + this.player.team, options)
+        if(!response.ok)
+            return response.status
+        else
+            return response.json().then(data => {
+                return data
+            })
+    }
+
+    getWinner = async () => {
+        const options = {
+            method: "GET"
+        }
+
+        let response = await fetch("/api/game/win", options)
+        if(!response.ok)
+            return response.status
+        else
+            return response.json().then(data => {
+                return data
+            })
+    }
 }

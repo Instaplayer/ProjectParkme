@@ -4,6 +4,8 @@ class Ui {
         this.awaitPlayer = document.getElementById("wait")
         this.UIbase = document.getElementById("background")
         this.playersFull = document.getElementById("playersFull")
+        this.playerWin = document.getElementById("playerWin")
+        this.playerLose = document.getElementById("playerLose")
     }
 
     toggleUiElement(element){
@@ -11,5 +13,9 @@ class Ui {
         element.style.display = ""
         else
         element.style.display = "none"
+    }
+
+    showEnemyWinner(user){
+        this.playerLose.children[0].innerHTML = "Przegrałeś! <br> pokonał cię " + user.name
     }
 }

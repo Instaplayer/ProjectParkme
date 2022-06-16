@@ -1,27 +1,17 @@
 class Game {
-    constructor() {
+    constructor(cars) {
+        
         // auta blokujące
-        // [x, y, boolRotation]
+        // [x, y, boolRotation, size]
         // jeśli boolRotation true
         // auta są obrócone o 90 stopni
-        this.cars = [
-            [-350, 450, true],
-            // [-450, 425],
-            // [-450, 375],
-            // [-450, 325],
-            // [-450, 275],
-            // [-450, 225],
-            // [-450, 175],
-            // [-450, 125],
-            // [-450, 75],
-            [50, 450, true],
-            // [50, 425],
-            // [50, 375],
-            // [50, 325],
-            // [50, 275],
-            [150, 475, false],
-            // [150, 325]
-        ]
+        // this.cars = [
+        //     [-350, 450, true, 2],
+        //     [50, 450, true, 2],
+        //     [150, 475, false, 2]
+        // ]
+        this.winState = false
+        this.cars = cars
         this.scene = new THREE.Scene();
         this.checkedCar = null;
         this.x = -500;
@@ -53,16 +43,14 @@ class Game {
         console.log(this.startCar);
         this.carList.push(this.startCar)
 
-        this.scene.add(this.startCar.bbHelper)
         this.scene.add(this.startCar.returnCarModel())
 
         for (let i = 0; i < this.cars.length; i++) {
-            let car = new Car(2)
+            let car = new Car(this.cars[i][3])
             this.carList.push(car)
             car.object.position.set(this.cars[i][0] * 2.22, 15, this.cars[i][1] * 2.22)
             if(this.cars[i][2])
             car.object.rotation.y = Math.PI/2
-            this.scene.add(car.bbHelper)
             this.scene.add(car.returnCarModel())
         }
         this.startCar.object.position.set(1000, 15, 55.556)
@@ -285,48 +273,21 @@ class Game {
             })
         }
 
-
-        // this.scene.add(testCar.returnCarModel())
-        // this.scene.add(testCar2.returnCarModel())
-        // let testCar = new Car(2)
-
         // Plansza
         this.geometry = new THREE.BoxGeometry(2222.22, 20, 2222.22);
-        this.material = new THREE.MeshBasicMaterial({
-            color: 0xf07630,
-            side: THREE.DoubleSide
-        });
+        this.material = new THREE.MeshPhongMaterial({
+            // map: texture,
+            specular: 0x0f0f0f,
+            // specularMap: texture,
+            shininess: 10,
+            side: THREE.DoubleSide,
+            color: 0x1f1f1f,
+            transparent: false,
+            opacity: 1
+        })
         this.cube = new THREE.Mesh(this.geometry, this.material);
         this.cube.position.set(0, -44.44, 0)
         this.scene.add(this.cube);
-        this.geometryLine = new THREE.BoxGeometry(2222.22, 1, 11.11);
-        for (let i = 0; i < 20; i++) {
-            this.material = new THREE.MeshBasicMaterial({
-                color: 0x000000,
-                side: THREE.DoubleSide
-            });
-            this.cube = new THREE.Mesh(this.geometryLine, this.material);
-            this.cube.position.set(0, -32.22, this.x * 2.22)
-            this.scene.add(this.cube);
-            if (i >= 18) {
-                this.x += 45;
-            }
-            else {
-                this.x += 50;
-            }
-        }
-        this.geometryLine2 = new THREE.BoxGeometry(11.11, 1, 2222.22);
-        for (let i = 0; i < 10; i++) {
-            this.material = new THREE.MeshBasicMaterial({
-                color: 0x000000,
-                side: THREE.DoubleSide
-            });
-            this.cube = new THREE.Mesh(this.geometryLine2, this.material);
-            this.cube.position.set(this.x2 * 2.22, -32.22, 0)
-            this.scene.add(this.cube);
-            this.x2 += 100;
-        }
-
 
         // kostka końca
         this.geometryFinish = new THREE.BoxGeometry(222.22, 1, 111.11);
@@ -347,10 +308,6 @@ class Game {
         this.finishCubeBB.max.y = 80
         this.finishCubeBB.min.y = -80
 
-
-        this.finishCubeBBVis = new THREE.Box3Helper (this.finishCubeBB, 0xffff00)
-        this.scene.add(this.finishCubeBBVis)
-
         this.scene.add(this.finishCube);
 
 
@@ -369,37 +326,6 @@ class Game {
         this.startCube.position.set(1000, -32.22, 55.556)
         this.scene.add(this.startCube);
 
-
-
-
-
-
-        // this.cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
-        //  testCar.enableDragControls(this.camera, this.renderer.domElement, this.cameraControls)
-
-        // // Funkcja podświetlająca
-        // const raycaster = new THREE.Raycaster();
-        // const mouseVector = new THREE.Vector2();
-        // document.getElementById("root").addEventListener("mousedown", () => {
-        //     // console.log(event.clientX);
-        //     // console.log(window.innerHeight);
-        //     console.log(mouseVector)
-        //     mouseVector.x = (event.clientX / window.innerWidth) * 2 - 1;
-        //     mouseVector.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        //     raycaster.setFromCamera(mouseVector, this.camera);
-        //     let intersects = raycaster.intersectObjects(this.scene.children);
-        //     if (intersects.length > 0) {
-        //         if (intersects[0].object.userData == "car") {
-        //             console.log(intersects[0].object);
-        //             if (this.checkedCar) {
-        //                 this.checkedCar.material.color.b = 0;
-        //             }
-        //             intersects[0].object.material.color.b = 1;
-        //             this.checkedCar = intersects[0].object;
-        //         }
-        //     }
-        // }
-        // );
         document.getElementById("root").append(this.renderer.domElement);
 
         this.render() // wywołanie metody render
@@ -428,13 +354,34 @@ class Game {
                 document.getElementById("root").removeEventListener('mouseup', carRelease)
             })
             this.draggableController.deactivate()
-            console.log("WIN")
+            this.winState = true
         }
         
         console.log("render leci")
 
     }
 
+    updateCarsArray = (DBcarsArray) => {
+        DBcarsArray.forEach(element => {
+            this.cars[element._id - 1][0] = element.x
+            this.cars[element._id - 1][1] = element.y
+            this.cars[element._id - 1][2] = element.rotated
+        });
 
+        this.alignCars()
+    }
+
+    alignCars = () => {
+        for(let index = 0; index < this.cars.length; index++){
+            this.carList[index + 1].object.position.x = this.cars[index][0] * 2.22
+            this.carList[index + 1].object.position.z = this.cars[index][1] * 2.22
+            if(this.cars[index][2]){
+                this.carList[index + 1].object.rotation.y = Math.PI/2
+            }
+            else
+            this.carList[index + 1].object.rotation.y = 0
+            
+        }
+    }
 
 }

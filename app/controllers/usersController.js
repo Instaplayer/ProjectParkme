@@ -68,5 +68,9 @@ module.exports = {
         })
 
         return resObj
-    }
+    },
+
+    resetEndGame: async () => {
+        model.winningTeam = 0
+    },
 }
