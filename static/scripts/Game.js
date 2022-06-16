@@ -5,7 +5,7 @@ class Game {
         // jeśli boolRotation true
         // auta są obrócone o 90 stopni
         this.cars = [
-            [-350, 475, true],
+            [-350, 450, true],
             // [-450, 425],
             // [-450, 375],
             // [-450, 325],
@@ -14,7 +14,7 @@ class Game {
             // [-450, 175],
             // [-450, 125],
             // [-450, 75],
-            [50, 475, true],
+            [50, 450, true],
             // [50, 425],
             // [50, 375],
             // [50, 325],
@@ -64,14 +64,68 @@ class Game {
             this.scene.add(car.returnCarModel())
         }
         startCar.object.position.set(1000, 15, 55.556)
-        startCar.carMaterial.color.b = 0;
-        startCar.carMaterial.color.r = 0;
-        startCar.object.userData = "startCar";
-
+        startCar.setAsPlayer()
         let cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
+
+        // Ściany
+        let wallBBArray = []
+        let wallArray = []
+        {
+            this.wallGeometry = new THREE.BoxGeometry(2232.22, 160, 55.556);
+            this.wallMaterial = new THREE.MeshPhongMaterial({
+                // map: texture,
+                specular: 0x525252,
+                // specularMap: texture,
+                shininess: 100,
+                side: THREE.DoubleSide,
+                color: 0x505050,
+                transparent: false,
+                opacity: 1
+            })
+            
+            this.wall1 = new THREE.Mesh(this.wallGeometry, this.wallMaterial)
+            this.wall2 = new THREE.Mesh(this.wallGeometry, this.wallMaterial)
+            this.wall3 = new THREE.Mesh(this.wallGeometry, this.wallMaterial)
+            this.wall4 = new THREE.Mesh(this.wallGeometry, this.wallMaterial)
+            
+            this.wall1.position.set(0, 0, -1141.11)
+            this.wall2.position.set(0, 0, 1141.11)
+            this.wall3.position.set(-1141.11, 0, 0)
+            this.wall4.position.set(1141.11, 0, 0)
+            this.wall3.rotation.y = Math.PI/2
+            this.wall4.rotation.y = Math.PI/2
+
+            this.wall1BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+            this.wall1BB.setFromObject(this.wall1)
+
+            this.wall2BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+            this.wall2BB.setFromObject(this.wall2)
+
+            this.wall3BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+            this.wall3BB.setFromObject(this.wall3)
+
+            this.wall4BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+            this.wall4BB.setFromObject(this.wall4)
+
+            wallArray.push(this.wall1)
+            wallArray.push(this.wall2)
+            wallArray.push(this.wall3)
+            wallArray.push(this.wall4)
+
+            wallBBArray.push(this.wall1BB)
+            wallBBArray.push(this.wall2BB)
+            wallBBArray.push(this.wall3BB)
+            wallBBArray.push(this.wall4BB)
+
+            this.scene.add(this.wall1)
+            this.scene.add(this.wall2)
+            this.scene.add(this.wall3)
+            this.scene.add(this.wall4)
+        }
 
         // Kontrolery ruchu aut + kolizje
         // Lista Aut które MOŻNA przesuwać VVV
+        
         let dragArray = this.carList
         {
             let dynamicDragArray = []
@@ -91,6 +145,8 @@ class Game {
                     }
                 });
 
+
+
                 this.startingPoint = {
                     x: event.object.position.x,
                     y: event.object.position.y,
@@ -108,7 +164,7 @@ class Game {
             this.draggableController.addEventListener( 'dragend', function (event) {
 
                 if(this.selectedCar)
-                if(this.selectedCar.checkColisions(dragArray) || this.intersects1.length > 0 || this.intersects2.length > 0){
+                if(this.selectedCar.checkColisions(dragArray) || this.selectedCar.checkWallColisions(wallBBArray) || this.intersects1.length > 0 || this.intersects2.length > 0){
                     event.object.position.set(this.startingPoint.x,this.startingPoint.y, this.startingPoint.z)
                 }
 
@@ -142,7 +198,14 @@ class Game {
                     this.intersects1 = []
                     this.intersects2 = []
 
+                    console.log(wallBBArray)
+
                     if(this.selectedCar.checkColisions(dragArray)){
+                        if(!this.selectedCar.opaque){
+                            this.selectedCar.toggleOpacity()
+                        }
+                    }
+                    else if(this.selectedCar.checkWallColisions(wallBBArray)){
                         if(!this.selectedCar.opaque){
                             this.selectedCar.toggleOpacity()
                         }
@@ -174,10 +237,23 @@ class Game {
                                 }
 
                             }
-
                         });
 
-                        if(!this.selectedCar.checkColisions(dragArray) && this.selectedCar.opaque && this.intersects1.length == 0 && this.intersects2.length == 0)
+                        wallArray.forEach(wall => {
+                            if(wall != event.object){
+                                if(ray1.intersectObject(wall).length > 0){
+                                    this.intersects1 = ray1.intersectObject(wall)
+                                }
+                                else if(ray2.intersectObject(wall).length > 0){
+                                    this.intersects2 = ray2.intersectObject(wall)
+                                }
+
+                                if(( this.intersects1.length > 0 || this.intersects2.length > 0) && this.selectedCar.opaque == false )
+                                this.selectedCar.toggleOpacity()
+                            }
+                        });
+
+                        if(!this.selectedCar.checkColisions(dragArray) && !this.selectedCar.checkWallColisions(wallBBArray) && this.selectedCar.opaque && this.intersects1.length == 0 && this.intersects2.length == 0)
                         this.selectedCar.toggleOpacity()
                     }
                 }
@@ -250,25 +326,44 @@ class Game {
             this.scene.add(this.cube);
             this.x2 += 100;
         }
-        this.geometryFinish = new THREE.BoxGeometry(222.22, 1, 111.11);
-        this.materialFinish = new THREE.MeshBasicMaterial({
-            color: 0x00ff00,
-            side: THREE.DoubleSide
-        });
+
 
         // kostka końca
+        this.geometryFinish = new THREE.BoxGeometry(222.22, 1, 111.11);
+        this.materialFinish = new THREE.MeshPhongMaterial({
+            // map: texture,
+            specular: 0x06aa06,
+            // specularMap: texture,
+            shininess: 100,
+            side: THREE.DoubleSide,
+            color: 0x00aa00,
+            transparent: false,
+            opacity: 1
+        })
         this.finishCube = new THREE.Mesh(this.geometryFinish, this.materialFinish);
         this.finishCube.position.set(-1000, -32.22, 55.556)
         this.scene.add(this.finishCube);
-        this.materialStart = new THREE.MeshBasicMaterial({
-            color: 0x0000ff,
-            side: THREE.DoubleSide
-        });
+
 
         // kostka spawnu
+        this.materialStart = new THREE.MeshPhongMaterial({
+            // map: texture,
+            specular: 0x0a0aaa,
+            // specularMap: texture,
+            shininess: 100,
+            side: THREE.DoubleSide,
+            color: 0x0000ff,
+            transparent: false,
+            opacity: 1
+        })
         this.startCube = new THREE.Mesh(this.geometryFinish, this.materialStart);
         this.startCube.position.set(1000, -32.22, 55.556)
         this.scene.add(this.startCube);
+
+
+
+
+
 
         // this.cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
         //  testCar.enableDragControls(this.camera, this.renderer.domElement, this.cameraControls)

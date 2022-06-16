@@ -31,6 +31,28 @@ class Car {
             opacity: 0.4
         })
 
+        this.playerCarMaterial = new THREE.MeshPhongMaterial({
+            // map: texture,
+            specular: 0x06aa06,
+            // specularMap: texture,
+            shininess: 100,
+            side: THREE.DoubleSide,
+            color: 0x005500,
+            transparent: false,
+            opacity: 1
+        })
+
+        this.opaquePlayerCarMaterial = new THREE.MeshPhongMaterial({
+            // map: texture,
+            specular: 0x06aa06,
+            // specularMap: texture,
+            shininess: 100,
+            side: THREE.DoubleSide,
+            color: 0x005500,
+            transparent: true,
+            opacity: 0.4
+        })
+
         this.boundingBox = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
 
         const cubeGeometry = new THREE.BoxGeometry(100 * length,100,100)
@@ -66,6 +88,21 @@ class Car {
         return colides
     }
 
+    checkWallColisions = (wallArray) => {
+
+        let colides = false
+
+        wallArray.forEach(wall => {
+            if(wall != this.boundingBox){
+                if(this.boundingBox.intersectsBox(wall)){
+                    colides = true
+                }
+            }
+        });
+
+        return colides
+    }
+
     updateBoundingBox = () => {
         this.boundingBox.copy(this.carModel.geometry.boundingBox).applyMatrix4(this.object.matrixWorld)
     }
@@ -79,6 +116,14 @@ class Car {
             this.carModel.material = this.carMaterial
             this.opaque = false
         }
+    }
+
+    setAsPlayer = () => {
+        this.carMaterial = this.playerCarMaterial
+        this.opaqueCarMaterial = this.opaquePlayerCarMaterial
+
+        this.carModel.material = this.carMaterial
+        this.object.userData = "startCar";
     }
 
 }
