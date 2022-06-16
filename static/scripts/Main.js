@@ -62,8 +62,10 @@ window.onload = async () => {
                     else{
                         console.log("LOST")
                         winnerNumber = winData.winner
-                        ui.showUiElement(ui.UIbase)
-                        ui.showUiElement(ui.playerLose)
+                        if(ui.playerWin.style.display == "none"){
+                            ui.showUiElement(ui.UIbase)
+                            ui.showUiElement(ui.playerLose)
+                        }
 
                         setTimeout( () => {
                             window.location.reload() 
