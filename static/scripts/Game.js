@@ -47,12 +47,12 @@ class Game {
         this.carList = []
 
         // Auto Startowe
-        let startCar = new Car(2)
-        console.log(startCar);
-        this.carList.push(startCar)
+        this.startCar = new Car(2)
+        console.log(this.startCar);
+        this.carList.push(this.startCar)
 
-        this.scene.add(startCar.bbHelper)
-        this.scene.add(startCar.returnCarModel())
+        this.scene.add(this.startCar.bbHelper)
+        this.scene.add(this.startCar.returnCarModel())
 
         for (let i = 0; i < this.cars.length; i++) {
             let car = new Car(2)
@@ -63,8 +63,8 @@ class Game {
             this.scene.add(car.bbHelper)
             this.scene.add(car.returnCarModel())
         }
-        startCar.object.position.set(1000, 15, 55.556)
-        startCar.setAsPlayer()
+        this.startCar.object.position.set(1000, 15, 55.556)
+        this.startCar.setAsPlayer()
         let cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
 
         // Ściany
@@ -197,8 +197,6 @@ class Game {
 
                     this.intersects1 = []
                     this.intersects2 = []
-
-                    console.log(wallBBArray)
 
                     if(this.selectedCar.checkColisions(dragArray)){
                         if(!this.selectedCar.opaque){
@@ -342,6 +340,15 @@ class Game {
         })
         this.finishCube = new THREE.Mesh(this.geometryFinish, this.materialFinish);
         this.finishCube.position.set(-1000, -32.22, 55.556)
+        this.finishCubeBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+        this.finishCubeBB.setFromObject(this.finishCube)
+        this.finishCubeBB.max.y = 80
+        this.finishCubeBB.min.y = -80
+
+
+        this.finishCubeBBVis = new THREE.Box3Helper (this.finishCubeBB, 0xffff00)
+        this.scene.add(this.finishCubeBBVis)
+
         this.scene.add(this.finishCube);
 
 
@@ -411,6 +418,10 @@ class Game {
             car.updateBoundingBox()
             car.checkColisions(this.carList)
         })
+        
+        if(this.startCar.detectWin(this.finishCubeBB) && !this.startCar.opaque){
+            console.log("WIN")
+        }
         
         console.log("render leci")
 

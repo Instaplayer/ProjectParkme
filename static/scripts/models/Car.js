@@ -126,4 +126,13 @@ class Car {
         this.object.userData = "startCar";
     }
 
+    detectWin = (winBlock) => {
+        let colides = false
+        
+        if(winBlock.containsBox(this.boundingBox)){
+            colides = true
+        }
+        return colides
+    }
+
 }
