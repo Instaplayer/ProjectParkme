@@ -8,11 +8,12 @@ class Ui {
         this.playerLose = document.getElementById("playerLose")
     }
 
-    toggleUiElement(element){
-        if(element.style.display == "none")
-        element.style.display = ""
-        else
+    hideUiElement(element){
         element.style.display = "none"
+    }
+
+    showUiElement(element){
+        element.style.display = ""
     }
 
     showEnemyWinner(user){

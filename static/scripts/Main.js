@@ -21,10 +21,11 @@ window.onload = async () => {
 
     
     game.updateCarsArray(await net.getMapData())
-    ui.toggleUiElement(ui.playersFull)
-    ui.toggleUiElement(ui.awaitPlayer)
-    ui.toggleUiElement(ui.playerWin)
-    ui.toggleUiElement(ui.playerLose)
+
+    ui.hideUiElement(ui.playersFull)
+    ui.hideUiElement(ui.awaitPlayer)
+    ui.hideUiElement(ui.playerWin)
+    ui.hideUiElement(ui.playerLose)
 
     let loginButton = document.getElementById("submit")
     loginButton.addEventListener('click',async () => {
@@ -35,10 +36,8 @@ window.onload = async () => {
             console.log(loginResult)
 
             if(loginResult.status == "success"){
-                ui.toggleUiElement(ui.mainLogin)
-                ui.toggleUiElement(ui.awaitPlayer)
-
-                
+                ui.hideUiElement(ui.mainLogin)
+                ui.showUiElement(ui.awaitPlayer)
 
                 handleWinner = setInterval(async ()=>{
 
@@ -50,8 +49,8 @@ window.onload = async () => {
                             winnerNumber = winData.winner
                             console.log("WIN")
 
-                            ui.toggleUiElement(ui.UIbase)
-                            ui.toggleUiElement(ui.playerWin)
+                            ui.showUiElement(ui.UIbase)
+                            ui.showUiElement(ui.playerWin)
 
                             setTimeout( () => {
                                window.location.reload() 
@@ -63,8 +62,8 @@ window.onload = async () => {
                     else{
                         console.log("LOST")
                         winnerNumber = winData.winner
-                        ui.toggleUiElement(ui.UIbase)
-                        ui.toggleUiElement(ui.playerLose)
+                        ui.showUiElement(ui.UIbase)
+                        ui.showUiElement(ui.playerLose)
 
                         setTimeout( () => {
                             window.location.reload() 
@@ -81,23 +80,23 @@ window.onload = async () => {
                         if(net.playerList){
                             if(net.playerList.length < playerList.length){
                                 net.playerList = playerList
-                                ui.toggleUiElement(ui.awaitPlayer)
-                                ui.toggleUiElement(ui.UIbase)
+                                ui.hideUiElement(ui.awaitPlayer)
+                                ui.hideUiElement(ui.UIbase)
                                 game.updateCarsArray(await net.getMapData())
                             }
                         }
                         else {
                             net.playerList = playerList
-                            ui.toggleUiElement(ui.awaitPlayer)
-                            ui.toggleUiElement(ui.UIbase)
+                            ui.hideUiElement(ui.awaitPlayer)
+                            ui.hideUiElement(ui.UIbase)
                             game.updateCarsArray(await net.getMapData())
                         }
                     }
                     else{
                         if(net.playerList)
                         if(net.playerList.length > playerList.length){
-                            ui.toggleUiElement(ui.awaitPlayer)
-                            ui.toggleUiElement(ui.UIbase)
+                            ui.showUiElement(ui.awaitPlayer)
+                            ui.showUiElement(ui.UIbase)
                             game.updateCarsArray(await net.getMapData())
 
                             net.playerList = playerList
@@ -106,8 +105,8 @@ window.onload = async () => {
                 }
             }
             else{
-                ui.toggleUiElement(ui.mainLogin)
-                ui.toggleUiElement(ui.playersFull)
+                ui.hideUiElement(ui.mainLogin)
+                ui.showUiElement(ui.playersFull)
 
                 let awaitEmptySpot = setInterval(async ()=>{
                     let playerList = await net.getAllUsers()
@@ -117,8 +116,8 @@ window.onload = async () => {
 
                             clearInterval(awaitEmptySpot)
 
-                            ui.toggleUiElement(ui.playersFull)
-                            ui.toggleUiElement(ui.awaitPlayer)
+                            ui.hideUiElement(ui.playersFull)
+                            ui.showUiElement(ui.awaitPlayer)
 
 
                             for(;;){
@@ -127,23 +126,23 @@ window.onload = async () => {
                                     if(net.playerList){
                                         if(net.playerList.length < playerList.length){
                                             net.playerList = playerList
-                                            ui.toggleUiElement(ui.awaitPlayer)
-                                            ui.toggleUiElement(ui.UIbase)
+                                            ui.hideUiElement(ui.awaitPlayer)
+                                            ui.hideUiElement(ui.UIbase)
                                             game.updateCarsArray(await net.getMapData())
                                         }
                                     }
                                     else {
                                         net.playerList = playerList
-                                        ui.toggleUiElement(ui.awaitPlayer)
-                                        ui.toggleUiElement(ui.UIbase)
+                                        ui.hideUiElement(ui.awaitPlayer)
+                                        ui.hideUiElement(ui.UIbase)
                                         game.updateCarsArray(await net.getMapData())
                                     }
                                 }
                                 else{
                                     if(net.playerList)
                                     if(net.playerList.length > playerList.length){
-                                        ui.toggleUiElement(ui.awaitPlayer)
-                                        ui.toggleUiElement(ui.UIbase)
+                                        ui.showUiElement(ui.awaitPlayer)
+                                        ui.showUiElement(ui.UIbase)
                                         game.updateCarsArray(await net.getMapData())
             
                                         net.playerList = playerList
