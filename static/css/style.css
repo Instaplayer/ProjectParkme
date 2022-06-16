@@ -30,9 +30,8 @@ body {
     text-align: center;
 }
 
-#wait {
+#wait, #playersFull {
     margin: auto;
-    display: none;
     background-color: lightgreen;
     border-radius: 20px;
     width: 300px;

@@ -12,12 +12,16 @@
 <body>
     <div id="ui">
         <div id="background">
+            <div id="playersFull">
+                <span>Gra jest już pełna </span>
+            </div>
             <div id="log">
                 <h1> LOGOWANIE </h1>
                 <input type="text" placeholder="Wpisz swoj nick..." id="nick"> <br>
-                <div id="submit" onclick="log()"> Zaloguj </div> <br>
+                <div id="submit"> Zaloguj </div> <br>
             </div>
-            <div id="wait"> <span>Oczekiwanie na drugiego gracza... </span>
+            <div id="wait"> 
+                <span>Oczekiwanie na drugiego gracza... </span>
             </div>
         </div>
     </div>
@@ -32,25 +36,27 @@
     <script src="scripts/models/Car.js"></script>
 
     <!-- Podstawowe skrypty -->
+    <script src="scripts/Net.js"></script>
+    <script src="scripts/UI.js"></script>
     <script src="scripts/Game.js"></script>
     <script src="scripts/Main.js"></script>
     <script>
-        let a = 0;
-        function log() {
-            if (a == 0) {
-                document.getElementById("log").style.display = "none";
-                document.getElementById("wait").style.display = "block";
-            }
-            else if (a == 1) {
-                document.getElementById("log").style.display = "none";
-                document.getElementById("background").style.display = "none";
-            }
-            else {
-                alert("Jest już max liczba graczy!");
+        // let a = 0;
+        // function log() {
+        //     if (a == 0) {
+        //         document.getElementById("log").style.display = "none";
+        //         document.getElementById("wait").style.display = "block";
+        //     }
+        //     else if (a == 1) {
+        //         document.getElementById("log").style.display = "none";
+        //         document.getElementById("background").style.display = "none";
+        //     }
+        //     else {
+        //         alert("Jest już max liczba graczy!");
 
-            }
-            a++;
-        }
+        //     }
+        //     a++;
+        // }
     </script>
 </body>
 

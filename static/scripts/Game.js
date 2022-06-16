@@ -44,6 +44,8 @@ class Game {
         this.light2.castShadow = true
         this.scene.add( this.light2 );
 
+        this.gameEnded = false
+
         this.carList = []
 
         // Auto Startowe
@@ -66,7 +68,7 @@ class Game {
         this.startCar.object.position.set(1000, 15, 55.556)
         this.startCar.setAsPlayer()
         let cameraControls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
-
+        this.cameraControls = cameraControls
         // Ściany
         let wallBBArray = []
         let wallArray = []
@@ -419,7 +421,13 @@ class Game {
             car.checkColisions(this.carList)
         })
         
-        if(this.startCar.detectWin(this.finishCubeBB) && !this.startCar.opaque){
+        if(this.startCar.detectWin(this.finishCubeBB) && !this.startCar.opaque && this.gameEnded == false){
+            this.gameEnded = true
+            let carRelease = document.getElementById("root").addEventListener('mouseup', ()=>{
+                this.cameraControls.enabled = true
+                document.getElementById("root").removeEventListener('mouseup', carRelease)
+            })
+            this.draggableController.deactivate()
             console.log("WIN")
         }
         

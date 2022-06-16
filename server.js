@@ -52,41 +52,41 @@ app.all(/\/api\/users/, async (req, res, next) => {
 
 
 
-//-------------------------------------------------- bazy ---- mapa1 
-map1.remove({}, { multi: true }, function (err, numRemoved) {
-});
-for (let i = 0; i < cars1.length; i++) {
-    const carObject = {
-        id: id1,
-        x: cars1[i][0],
-        y: cars1[i][1],
-        rotation: cars1[i][2]
-    };
-    map1.insert(carObject, function (err, newDoc) {
-    });
-    id1++;
-}
-map1.find({}, function (err, docs) {
-    //zwracam dane w postaci JSON
-    console.log("----- tablica obiektów pobrana z bazy: \n")
-    console.log(docs)
-});
-// -------------------------------------------------- mapa2
-map2.remove({}, { multi: true }, function (err, numRemoved) {
-});
-for (let i = 0; i < cars2.length; i++) {
-    const carObject = {
-        id: id2,
-        x: cars2[i][0],
-        y: cars2[i][1],
-        rotation: cars2[i][2]
-    };
-    map2.insert(carObject, function (err, newDoc) {
-    });
-    id2++;
-}
-map2.find({}, function (err, docs) {
-    //zwracam dane w postaci JSON
-    console.log("----- tablica obiektów pobrana z bazy: \n")
-    console.log(docs)
-});
+// //-------------------------------------------------- bazy ---- mapa1 
+// map1.remove({}, { multi: true }, function (err, numRemoved) {
+// });
+// for (let i = 0; i < cars1.length; i++) {
+//     const carObject = {
+//         id: id1,
+//         x: cars1[i][0],
+//         y: cars1[i][1],
+//         rotation: cars1[i][2]
+//     };
+//     map1.insert(carObject, function (err, newDoc) {
+//     });
+//     id1++;
+// }
+// map1.find({}, function (err, docs) {
+//     //zwracam dane w postaci JSON
+//     console.log("----- tablica obiektów pobrana z bazy: \n")
+//     console.log(docs)
+// });
+// // -------------------------------------------------- mapa2
+// map2.remove({}, { multi: true }, function (err, numRemoved) {
+// });
+// for (let i = 0; i < cars2.length; i++) {
+//     const carObject = {
+//         id: id2,
+//         x: cars2[i][0],
+//         y: cars2[i][1],
+//         rotation: cars2[i][2]
+//     };
+//     map2.insert(carObject, function (err, newDoc) {
+//     });
+//     id2++;
+// }
+// map2.find({}, function (err, docs) {
+//     //zwracam dane w postaci JSON
+//     console.log("----- tablica obiektów pobrana z bazy: \n")
+//     console.log(docs)
+// });
