@@ -1,10 +1,12 @@
 let net
+let debugNet
 let ui
 let game
 
 window.onload = async () => {
     
     net = new Net()
+    debugNet = new DebugNet()
     ui = new Ui()
 
     let stockArray = await net.getMapData()
